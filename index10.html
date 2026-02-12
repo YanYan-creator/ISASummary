@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Adrian's Dashboard</title>
+    <style>
+        :root {
+            --radius: 18px;
+            --shadow: 0 14px 40px rgba(0, 0, 0, .45);
+
+            /* Dark default */
+            --page-bg1: #070A12;
+            --page-bg2: #0B1022;
+
+            --panel-bg: rgba(12, 18, 40, .78);
+            --card-bg: rgba(255, 255, 255, .06);
+
+            --text: rgba(255, 255, 255, .92);
+            --muted: rgba(255, 255, 255, .72);
+
+            --border: rgba(255, 255, 255, .14);
+            --border2: rgba(255, 255, 255, .20);
+
+            --chip-bg: rgba(255, 255, 255, .06);
+            --chip-bg-hover: rgba(255, 255, 255, .09);
+
+            --input-bg: rgba(0, 0, 0, .26);
+
+            --accent-a: #7C5CFF;
+            --accent-b: #22D3EE;
+        }
+
+        :root[data-theme="light"] {
+            --page-bg1: #F6F7FB;
+            --page-bg2: #ECEFF7;
+
+            --panel-bg: rgba(255, 255, 255, .92);
+            --card-bg: rgba(0, 0, 0, .03);
+
+            --text: rgba(0, 0, 0, .88);
+            --muted: rgba(0, 0, 0, .62);
+
+            --border: rgba(0, 0, 0, .10);
+            --border2: rgba(0, 0, 0, .16);
+
+            --chip-bg: rgba(0, 0, 0, .04);
+            --chip-bg-hover: rgba(0, 0, 0, .06);
+
+            --input-bg: rgba(255, 255, 255, .82);
+
+            --shadow: 0 14px 40px rgba(18, 22, 45, .14);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 800px at 20% 10%, color-mix(in srgb, var(--accent-a) 28%, transparent), transparent 55%),
+                radial-gradient(900px 700px at 80% 70%, color-mix(in srgb, var(--accent-b) 20%, transparent), transparent 55%),
+                linear-gradient(180deg, var(--page-bg1), var(--page-bg2));
+            overflow-x: hidden;
+        }
+
+        .app {
+            min-height: 100%;
+            display: flex;
+            gap: 22px;
+            padding: 22px;
+        }
+
+        .rail {
+            width: 260px;
+            min-width: 240px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px;
+            position: sticky;
+            top: 18px;
+            height: calc(100vh - 44px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .brandRow {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 10px 6px 10px;
+        }
+
+        .brandLeft {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        /* Logo image (logo.png) */
+        .logoImg {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            border: 1px solid var(--border2);
+            background: var(--card-bg);
+            object-fit: contain;
+            padding: 6px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+            display: block;
+            flex: 0 0 34px;
+        }
+
+        .brandTxt {
+            min-width: 0;
+        }
+
+        .brandTxt h1 {
+            font-size: 14px;
+            margin: 0;
+            letter-spacing: .5px;
+            font-weight: 680;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brandTxt p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .themeBtn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 8px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background .12s ease, border-color .12s ease, transform .12s ease;
+            user-select: none;
+            flex: 0 0 auto;
+        }
+
+        .themeBtn:hover {
+            background: color-mix(in srgb, var(--card-bg) 75%, white 10%);
+            border-color: var(--border2);
+            transform: translateY(-1px);
+        }
+
+        .themeBtn:active {
+            transform: translateY(0px);
+        }
+
+        .avatarCard {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .avatarFrame {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            border: 1px solid var(--border2);
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .22), transparent 60%),
+                linear-gradient(135deg, color-mix(in srgb, var(--accent-a) 35%, transparent), color-mix(in srgb, var(--accent-b) 22%, transparent));
+            overflow: hidden;
+            flex: 0 0 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+        }
+
+        .avatarFrame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .avatarMeta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .avatarMeta .name {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .avatarMeta .hint {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 4px 6px;
+            flex: 1;
+        }
+
+        .navbtn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 12px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .navbtn:hover {
+            transform: translateY(-1px);
+            border-color: var(--border2);
+            background: color-mix(in srgb, var(--card-bg) 82%, white 10%);
+        }
+
+        .navbtn:active {
+            transform: translateY(0px);
+        }
+
+        .navbtn .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 650;
+            letter-spacing: .2px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--text) 22%, transparent);
+            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .10);
+        }
+
+        :root[data-theme="light"] .dot {
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .55);
+        }
+
+        .navbtn.active {
+            background: linear-gradient(135deg, color-mix(in srgb, var(--accent-a) 18%, transparent), color-mix(in srgb, var(--accent-b) 10%, transparent));
+            border-color: color-mix(in srgb, var(--accent-a) 45%, var(--border));
+        }
+
+        .navbtn.active .dot {
+            background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+        }
+
+        .kbd {
+            font-size: 11px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--card-bg) 85%, black 8%);
+            padding: 3px 7px;
+            border-radius: 10px;
+        }
+
+        :root[data-theme="light"] .kbd {
+            background: rgba(255, 255, 255, .85);
+        }
+
+        .railFooter {
+            padding: 8px 10px 10px 10px;
+            border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+            color: var(--muted);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 6px 6px 20px 6px;
+        }
+
+        .wrap {
+            width: min(1100px, 100%);
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            background:
+                radial-gradient(500px 260px at 20% 10%, color-mix(in srgb, var(--accent-a) 18%, transparent), transparent 60%),
+                radial-gradient(500px 260px at 85% 85%, color-mix(in srgb, var(--accent-b) 14%, transparent), transparent 60%);
+            pointer-events: none;
+        }
+
+        .cardHeader {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .cardHeader h2 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: .2px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .small {
+            font-size: 12px;
+        }
+
+        .scriptBox {
+            position: relative;
+            border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+            background: color-mix(in srgb, var(--card-bg) 86%, black 6%);
+            border-radius: 14px;
+            padding: 12px 12px;
+            line-height: 1.55;
+        }
+
+        :root[data-theme="light"] .scriptBox {
+            background: rgba(255, 255, 255, .88);
+        }
+
+        .section {
+            position: relative;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+        }
+
+        .sectionTitle {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: color-mix(in srgb, var(--text) 92%, transparent);
+            letter-spacing: .2px;
+        }
+
+        .q {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 10px;
+            border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+            background: var(--card-bg);
+            border-radius: 14px;
+            margin-bottom: 10px;
+        }
+
+        .qIcon {
+            width: 24px;
+            height: 24px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--card-bg) 80%, white 8%);
+            flex: 0 0 24px;
+            font-size: 13px;
+            color: color-mix(in srgb, var(--text) 92%, transparent);
+            margin-top: 1px;
+        }
+
+        .qBody {
+            flex: 1;
+        }
+
+        .qText {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            font-weight: 650;
+            line-height: 1.35;
+        }
+
+        .input {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text);
+            padding: 10px 10px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .input::placeholder {
+            color: color-mix(in srgb, var(--muted) 70%, transparent);
+        }
+
+        .input:focus {
+            border-color: color-mix(in srgb, var(--accent-a) 50%, var(--border));
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-a) 18%, transparent);
+        }
+
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip {
+            position: relative;
+            border: 1px solid var(--border);
+            background: var(--chip-bg);
+            padding: 8px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            cursor: pointer;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .chip:hover {
+            transform: translateY(-1px);
+            border-color: var(--border2);
+            background: var(--chip-bg-hover);
+        }
+
+        .chip input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chip .box {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            border: 2px solid color-mix(in srgb, var(--text) 28%, transparent);
+            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            line-height: 1;
+        }
+
+        .chip.selected {
+            border-color: color-mix(in srgb, var(--accent-a) 45%, var(--border));
+            background: linear-gradient(135deg, color-mix(in srgb, var(--accent-a) 18%, transparent), color-mix(in srgb, var(--accent-b) 10%, transparent));
+        }
+
+        .chip.selected .box {
+            border-color: color-mix(in srgb, var(--accent-a) 90%, white 10%);
+            background: color-mix(in srgb, var(--accent-a) 18%, transparent);
+        }
+
+        .lockRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btnRow {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .linkBtn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: var(--chip-bg);
+            color: color-mix(in srgb, var(--text) 92%, transparent);
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: border-color .12s ease, background .12s ease;
+        }
+
+        .linkBtn:hover {
+            border-color: var(--border2);
+            background: var(--chip-bg-hover);
+        }
+
+        .summaryList {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .sumRow {
+            border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 12px 12px;
+        }
+
+        .sumLabel {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            letter-spacing: .2px;
+        }
+
+        .sumValue {
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1.35;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 980px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .app {
+                flex-direction: column;
+                padding: 14px;
+                gap: 14px;
+            }
+
+            .rail {
+                position: relative;
+                top: auto;
+                height: auto;
+                width: 100%;
+            }
+
+            .btns {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .main {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="rail">
+            <div class="brandRow">
+                <div class="brandLeft">
+                    <!-- Put logo.png in the SAME folder as this HTML file.
+               If you put it in /images, change src="images/logo.png" -->
+                    <img class="logoImg" src="logo.png" alt="Logo" />
+
+                    <div class="brandTxt">
+
+
+                    </div>
+                </div>
+
+                <button class="themeBtn" id="themeToggle" type="button" aria-label="Toggle theme">
+                    <span id="themeIcon" aria-hidden="true">☾</span>
+                    <span id="themeText">Dark</span>
+                </button>
+            </div>
+
+            <!-- Optional profile photo frame (photo.png). Keep or remove as you like. -->
+            <div class="avatarCard">
+                <div class="avatarFrame" aria-label="Your photo">
+                    <!-- Put photo.png in the SAME folder. Or change to images/photo.png -->
+                    <img id="avatarImg" src="photo.png" alt="Your photo" />
+                </div>
+                <div class="avatarMeta">
+                    <div class="name">ISA Adrian </div>
+                    <div class="hint">Power Real State</div>
+                </div>
+            </div>
+
+            <div class="btns" id="nav">
+                <button class="navbtn active" data-section="Location" type="button"><span class="left"><span
+                            class="dot"></span>Location</span><span class="kbd">1</span></button>
+                <button class="navbtn" data-section="Price" type="button"><span class="left"><span
+                            class="dot"></span>Price</span><span class="kbd">2</span></button>
+                <button class="navbtn" data-section="Motivation" type="button"><span class="left"><span
+                            class="dot"></span>Motivation</span><span class="kbd">3</span></button>
+                <button class="navbtn" data-section="Agent" type="button"><span class="left"><span
+                            class="dot"></span>Agent</span><span class="kbd">4</span></button>
+                <button class="navbtn" data-section="Mortgage" type="button"><span class="left"><span
+                            class="dot"></span>Mortgage</span><span class="kbd">5</span></button>
+                <button class="navbtn" data-section="Appointment" type="button"><span class="left"><span
+                            class="dot"></span>Appointment</span><span class="kbd">6</span></button>
+            </div>
+
+            <div class="railFooter">
+                <span id="status">Selected: Location</span>
+                <span class="pill">Premium UI</span>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="wrap">
+                <section class="card" aria-label="Content">
+                    <div class="cardHeader">
+                        <h2 id="contentTitle">Location</h2>
+                        <span class="pill">Active</span>
+                    </div>
+                    <div id="contentBody" class="small muted"></div>
+                </section>
+
+                <section class="card" aria-label="Summary">
+                    <div class="cardHeader">
+                        <h2>Summary</h2>
+                        <span class="pill">Live</span>
+                    </div>
+
+                    <div class="summaryList" id="summaryList"></div>
+
+                    <div class="section" style="border-top:none; padding-top:0; margin-top:14px;">
+                        <div class="scriptBox small muted">
+                            Summary keeps everything selected across Location, Price, Motivation, Agent, Mortgage, and
+                            Appointment.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /* THEME TOGGLE */
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = document.getElementById("themeIcon");
+        const themeText = document.getElementById("themeText");
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.theme = theme;
+            localStorage.setItem("theme", theme);
+
+            const isLight = theme === "light";
+            themeIcon.textContent = isLight ? "☀" : "☾";
+            themeText.textContent = isLight ? "Light" : "Dark";
+        }
+
+        const savedTheme = localStorage.getItem("theme");
+        applyTheme(savedTheme === "light" ? "light" : "dark");
+
+        themeToggle.addEventListener("click", () => {
+            const now = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+            applyTheme(now);
+        });
+
+        /* APP LOGIC */
+        const nav = document.getElementById("nav");
+        const status = document.getElementById("status");
+        const contentTitle = document.getElementById("contentTitle");
+        const contentBody = document.getElementById("contentBody");
+        const summaryList = document.getElementById("summaryList");
+
+        const state = {
+            activeSection: "Location",
+
+            locationStage: "",
+            cityAreas: "",
+            communities: "",
+            irvineAppeal: "",
+            nearbyCommunities: "",
+            neighborhood: { values: [], locked: false },
+            homeType: { values: [], locked: false },
+            bedroom: { values: [], locked: false },
+            bathroom: { values: [], locked: false },
+
+            price: { values: [], locked: false },
+
+            motivation: { values: [], locked: false },
+
+            hasBroker: { value: "", locked: false },
+
+            payType: { values: [], locked: false },
+            preApproved: { value: "", locked: false },
+
+            apptDay: { values: [], locked: false },
+            apptDuration: "20-minute call",
+        };
+
+        function escapeHtml(str) {
+            return String(str)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function joinList(arr) {
+            if (!arr || !arr.length) return "";
+            return arr.join(", ");
+        }
+
+        function renderSummary() {
+            const rows = [];
+
+            if (state.locationStage) rows.push({ label: "Stage", value: state.locationStage });
+            if (state.cityAreas.trim()) rows.push({ label: "City or areas", value: state.cityAreas.trim() });
+            if (state.communities.trim()) rows.push({ label: "Communities", value: state.communities.trim() });
+            if (state.irvineAppeal.trim()) rows.push({ label: "Irvine appeal", value: state.irvineAppeal.trim() });
+            if (state.nearbyCommunities.trim()) rows.push({ label: "Nearby communities", value: state.nearbyCommunities.trim() });
+
+            const n = joinList(state.neighborhood.values);
+            const h = joinList(state.homeType.values);
+            const b = joinList(state.bedroom.values);
+            const ba = joinList(state.bathroom.values);
+
+            if (n) rows.push({ label: "Neighborhood priority", value: n });
+            if (h) rows.push({ label: "Home type", value: h });
+            if (b) rows.push({ label: "Bedrooms", value: b });
+            if (ba) rows.push({ label: "Bathrooms", value: ba });
+
+            const p = joinList(state.price.values);
+            if (p) rows.push({ label: "Price points", value: p });
+
+            const m = joinList(state.motivation.values);
+            if (m) rows.push({ label: "Motivation", value: m });
+
+            if (state.hasBroker.value) rows.push({ label: "Already with a broker", value: state.hasBroker.value });
+
+            const pt = joinList(state.payType.values);
+            if (pt) rows.push({ label: "Paying", value: pt });
+            if (state.preApproved.value) rows.push({ label: "Pre-approved", value: state.preApproved.value });
+
+            const day = joinList(state.apptDay.values);
+            if (day) rows.push({ label: "Appointment preference", value: `${day} (${state.apptDuration})` });
+
+            if (!rows.length) {
+                rows.push({ label: "Summary", value: "No selections yet. Start with Location." });
+            }
+
+            summaryList.innerHTML = rows.map(r => `
+        <div class="sumRow">
+          <div class="sumLabel">${escapeHtml(r.label)}</div>
+          <div class="sumValue">${escapeHtml(r.value)}</div>
+        </div>
+      `).join("");
+        }
+
+        function toggleInArray(arr, value, checked) {
+            const set = new Set(arr);
+            if (checked) set.add(value);
+            else set.delete(value);
+            return [...set];
+        }
+
+        function chipGroupMultiHTML({ groupId, title, options, locked, selectedValues }) {
+            const chips = options.map((opt) => {
+                const selected = selectedValues.includes(opt);
+                const hidden = locked && !selected;
+                return `
+          <label class="chip ${selected ? "selected" : ""}" style="${hidden ? "display:none" : ""}">
+            <input type="checkbox"
+              value="${escapeHtml(opt)}"
+              data-group="${escapeHtml(groupId)}"
+              ${selected ? "checked" : ""}>
+            <span class="box" aria-hidden="true">${selected ? "✓" : ""}</span>
+            <span>${escapeHtml(opt)}</span>
+          </label>
+        `;
+            }).join("");
+
+            const hasAny = selectedValues.length > 0;
+
+            return `
+        <div class="section" id="${escapeHtml(groupId)}">
+          <p class="sectionTitle">${escapeHtml(title)}</p>
+          <div class="choices">${chips}</div>
+          <div class="lockRow">
+            <span class="small muted">
+              ${locked ? "Locked, unticked options are hidden." : "Select one or more, then Lock to hide unticked options."}
+            </span>
+            <div class="btnRow">
+              <button class="linkBtn" type="button" data-action="lock" data-group="${escapeHtml(groupId)}" style="${(!locked && hasAny) ? "" : "display:none"}">Lock</button>
+              <button class="linkBtn" type="button" data-action="unlock" data-group="${escapeHtml(groupId)}" style="${locked ? "" : "display:none"}">Change</button>
+              <button class="linkBtn" type="button" data-action="clear" data-group="${escapeHtml(groupId)}" style="${(!locked && hasAny) ? "" : "display:none"}">Clear</button>
+            </div>
+          </div>
+        </div>
+      `;
+        }
+
+        function renderLocation() {
+            const stageMove = (state.locationStage === "Move soon");
+            const stageBrowse = (state.locationStage === "Browsing stage");
+
+            const stageIntro = stageMove
+                ? "Perfect, if you’re moving soon, let’s tighten this quickly."
+                : stageBrowse
+                    ? "No worries, that’s a smart way to start. Let me help you browse properly. What area are you considering and what price range do you want me to use so the options I send are realistic?"
+                    : "";
+
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;" id="locationStagePick">
+          <p class="sectionTitle">Opening script</p>
+          <div class="scriptBox">
+            Hi [Name], this is Adrian with Power Real State Group. I’m calling because you inquired about purchasing a home?
+            <br><br>
+            Are you looking to move soon, or are you still in the early browsing stage?
+          </div>
+
+          <div class="q" style="margin-top:12px;">
+            <div class="qIcon" aria-hidden="true">○</div>
+            <div class="qBody">
+              <p class="qText">Select stage</p>
+              <div class="choices">
+                <label class="chip ${stageMove ? "selected" : ""}">
+                  <input type="radio" name="stage" value="Move soon" data-action="stage" ${stageMove ? "checked" : ""}>
+                  <span class="box" aria-hidden="true">${stageMove ? "✓" : ""}</span>
+                  <span>Move soon</span>
+                </label>
+                <label class="chip ${stageBrowse ? "selected" : ""}">
+                  <input type="radio" name="stage" value="Browsing stage" data-action="stage" ${stageBrowse ? "checked" : ""}>
+                  <span class="box" aria-hidden="true">${stageBrowse ? "✓" : ""}</span>
+                  <span>Browsing stage</span>
+                </label>
+              </div>
+              <div class="small muted" style="margin-top:8px;">Selecting a stage jumps to the questions.</div>
+            </div>
+          </div>
+        </div>
+
+        ${state.locationStage ? `
+          <div class="section" id="locationQuestions">
+            <p class="sectionTitle">Questions (${escapeHtml(state.locationStage)})</p>
+            <div class="scriptBox">${escapeHtml(stageIntro)}</div>
+
+            <div class="q" style="margin-top:12px;">
+              <div class="qIcon" aria-hidden="true">✓</div>
+              <div class="qBody">
+                <p class="qText">1. Are you looking in a specific city, or are you open to a few different areas?</p>
+                <input class="input" data-field="cityAreas" placeholder="Type answer here" value="${escapeHtml(state.cityAreas)}" />
+              </div>
+            </div>
+
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">✓</div>
+              <div class="qBody">
+                <p class="qText">2. Have you narrowed it down to particular communities?</p>
+                <input class="input" data-field="communities" placeholder="Type communities here" value="${escapeHtml(state.communities)}" />
+              </div>
+            </div>
+
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">✓</div>
+              <div class="qBody">
+                <p class="qText">3. What specifically about Irvine appeals to you most?</p>
+                <input class="input" data-field="irvineAppeal" placeholder="Type what appeals most" value="${escapeHtml(state.irvineAppeal)}" />
+              </div>
+            </div>
+
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">✓</div>
+              <div class="qBody">
+                <p class="qText">4. Are you set on that area, or would you consider nearby communities for the right opportunity?</p>
+                <input class="input" data-field="nearbyCommunities" placeholder="Type nearby options or preferences" value="${escapeHtml(state.nearbyCommunities)}" />
+              </div>
+            </div>
+
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">✓</div>
+              <div class="qBody">
+                <p class="qText">5. What's most important to you in a neighborhood?</p>
+
+                ${chipGroupMultiHTML({
+                groupId: "neighborhoodGroup",
+                title: "Neighborhood preference",
+                options: ["Residential", "Quiet", "Central", "With spacious parking", "Near Home", "Easy to commute", "School", "Near workplace"],
+                locked: state.neighborhood.locked,
+                selectedValues: state.neighborhood.values
+            })}
+              </div>
+            </div>
+
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">•</div>
+              <div class="qBody">
+                <p class="qText">Ideal home, how many bedrooms and bathrooms?</p>
+
+                ${chipGroupMultiHTML({
+                groupId: "homeTypeGroup",
+                title: "HOME category",
+                options: ["Single-family house", "Townhouse", "Duplex (2 units)", "Triplex / Fourplex", "Condo", "Studio unit, single open space"],
+                locked: state.homeType.locked,
+                selectedValues: state.homeType.values
+            })}
+
+                ${chipGroupMultiHTML({
+                groupId: "bedroomGroup",
+                title: "Bedroom category",
+                options: ["1 bedroom", "2 bedrooms", "3 bedrooms", "4 bedrooms", "5 bedrooms"],
+                locked: state.bedroom.locked,
+                selectedValues: state.bedroom.values
+            })}
+
+                ${chipGroupMultiHTML({
+                groupId: "bathroomGroup",
+                title: "Bathroom category",
+                options: ["1 bathroom", "1.5 bathroom", "2 bathrooms", "2.5 bathrooms", "3 bathrooms"],
+                locked: state.bathroom.locked,
+                selectedValues: state.bathroom.values
+            })}
+              </div>
+            </div>
+          </div>
+        ` : `
+          <div class="section">
+            <p class="sectionTitle">Next</p>
+            <div class="scriptBox small muted">Select Move soon or Browsing stage to continue.</div>
+          </div>
+        `}
+      `;
+        }
+
+        function renderPrice() {
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;">
+          <p class="sectionTitle">Price</p>
+          <div class="scriptBox">Select one, multiple, or all price points. Lock to hide unticked options.</div>
+          ${chipGroupMultiHTML({
+                groupId: "priceGroup",
+                title: "Price points",
+                options: ["400", "450", "500", "550", "600", "650", "700", "750", "800", "850", "900", "950", "1000-1500"],
+                locked: state.price.locked,
+                selectedValues: state.price.values
+            })}
+        </div>
+      `;
+        }
+
+        function motivationDetails(reason) {
+            const map = {
+                "Job Change or Relocation": ["Got it. So a job change bringing you to area. That makes sense."],
+                "Growing Family": [
+                    "Got it. With a growing family, space and layout matter more than anything.",
+                    "Makes sense. For a growing family, safety and a kid friendly community are key."
+                ],
+                "School": ["That's such an exciting milestone, finding the right home before school starts makes total sense."],
+                "Lifestyle Upgrade": [
+                    "Got it. When you say lifestyle upgrade, what changes in your daily routine, shorter commute, better walkability, quieter space, or better amenities like a gym and pool?",
+                    "Love that, lifestyle upgrade is a smart goal. Let’s define what that looks like so I can filter properly."
+                ],
+                "Equity Builder": [
+                    "I hear you. Rent can feel like a dead end when it keeps going up and you are not building anything. The good news is we can check if owning makes sense for you right now, based on your monthly budget and timeline."
+                ],
+                "Investment-Minded Buyer": [
+                    "Understood. What return do you consider a win, steady rental income, or higher growth even if rent is lower? I’ll shortlist properties that match that."
+                ],
+                "Timing Uncertain": [
+                    "That’s completely fine. You don’t need to be sure today. My role is to help you get clarity, not to push you.",
+                    "What are you unsure about most, budget, location, timing, or whether buying is the right move?",
+                    "No problem. We can do this two ways, we either start with a quick budget and financing check, or we start with viewing a few options so you can see what your money gets. I’ll guide you either way.",
+                    "To help you decide, tell me what would make you feel confident, a monthly payment number, a commute time, or the right type of home?"
+                ],
+            };
+            const lines = map[reason] || [];
+            if (!lines.length) return "";
+            return `
+        <div class="section">
+          <p class="sectionTitle">${escapeHtml(reason)} section</p>
+          ${lines.map(line => `
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">•</div>
+              <div class="qBody">
+                <p class="qText" style="margin-bottom:0;">${escapeHtml(line)}</p>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+        }
+
+        function renderMotivation() {
+            const options = ["Job Change or Relocation", "Growing Family", "School", "Lifestyle Upgrade", "Equity Builder", "Investment-Minded Buyer", "Timing Uncertain"];
+            const selected = state.motivation.values;
+
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;">
+          <p class="sectionTitle">Motivation</p>
+          <div class="scriptBox">So what's got you thinking about making a move right now?</div>
+
+          ${chipGroupMultiHTML({
+                groupId: "motivationGroup",
+                title: "Select motivation(s)",
+                options,
+                locked: state.motivation.locked,
+                selectedValues: selected
+            })}
+
+          ${selected.length ? `
+            <div class="section" id="motivationDetails">
+              <p class="sectionTitle">Selected sections</p>
+              ${selected.map(m => motivationDetails(m)).join("")}
+            </div>
+          ` : `
+            <div class="section">
+              <p class="sectionTitle">Next</p>
+              <div class="scriptBox small muted">Pick one or more motivations, they appear in Summary and expand below.</div>
+            </div>
+          `}
+        </div>
+      `;
+        }
+
+        function renderAgent() {
+            const yes = state.hasBroker.value === "Yes";
+            const no = state.hasBroker.value === "No";
+            const locked = state.hasBroker.locked;
+            const hideOther = locked && state.hasBroker.value;
+
+            function chip(label) {
+                const selected = state.hasBroker.value === label;
+                const hidden = hideOther && !selected;
+                return `
+          <label class="chip ${selected ? "selected" : ""}" style="${hidden ? "display:none" : ""}">
+            <input type="checkbox" value="${label}" data-group="agentGroup" ${selected ? "checked" : ""}>
+            <span class="box" aria-hidden="true">${selected ? "✓" : ""}</span>
+            <span>${label}</span>
+          </label>
+        `;
+            }
+
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;">
+          <p class="sectionTitle">Agent</p>
+
+          <div class="q">
+            <div class="qIcon" aria-hidden="true">•</div>
+            <div class="qBody">
+              <p class="qText">Just to avoid stepping on anyone’s toes, have you already been speaking with a broker about this search?</p>
+              <div class="choices">${chip("No")}${chip("Yes")}</div>
+
+              <div class="lockRow">
+                <span class="small muted">${locked ? "Selected and locked. Other option is hidden." : "Pick one. It will hide the other option and update Summary."}</span>
+                <div class="btnRow">
+                  <button class="linkBtn" type="button" data-action="unlock" data-group="agentGroup" style="${locked ? "" : "display:none"}">Change</button>
+                  <button class="linkBtn" type="button" data-action="clear" data-group="agentGroup" style="${(!locked && state.hasBroker.value) ? "" : "display:none"}">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          ${yes ? `
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">•</div>
+              <div class="qBody">
+                <p class="qText" style="margin-bottom:0;">
+                  Perfect, thanks for letting me know. If you have an exclusive agreement, I’ll step back and won’t interfere. If you’re not exclusive and you just want a second opinion on pricing or options, I can help with that.
+                </p>
+              </div>
+            </div>
+          ` : ``}
+
+          ${no ? `
+            <div class="q">
+              <div class="qIcon" aria-hidden="true">•</div>
+              <div class="qBody">
+                <p class="qText" style="margin-bottom:0;">
+                  Great, then I’ll take care of the filtering for you. I’ll send a short list that matches your budget and location, and include the key details people usually miss like dues, parking, and realistic pricing.
+                </p>
+              </div>
+            </div>
+          ` : ``}
+        </div>
+      `;
+        }
+
+        function renderMortgage() {
+            const no = state.preApproved.value === "No";
+            const locked = state.preApproved.locked;
+            const hideOther = locked && state.preApproved.value;
+
+            function yesNoChip(label) {
+                const selected = state.preApproved.value === label;
+                const hidden = hideOther && !selected;
+                return `
+          <label class="chip ${selected ? "selected" : ""}" style="${hidden ? "display:none" : ""}">
+            <input type="checkbox" value="${label}" data-group="preApprovedGroup" ${selected ? "checked" : ""}>
+            <span class="box" aria-hidden="true">${selected ? "✓" : ""}</span>
+            <span>${label}</span>
+          </label>
+        `;
+            }
+
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;">
+          <p class="sectionTitle">Mortgage</p>
+
+          <div class="q">
+            <div class="qIcon" aria-hidden="true">•</div>
+            <div class="qBody">
+              <p class="qText">Just want to make sure I'm showing you homes that fit your budget. And are you paying cash or financing?</p>
+
+              ${chipGroupMultiHTML({
+                groupId: "payTypeGroup",
+                title: "Cash or financing",
+                options: ["Cash", "Financing"],
+                locked: state.payType.locked,
+                selectedValues: state.payType.values
+            })}
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="qIcon" aria-hidden="true">•</div>
+            <div class="qBody">
+              <p class="qText">Have you had a chance to get pre-approved yet?</p>
+
+              <div class="choices">
+                ${yesNoChip("Yes")}
+                ${yesNoChip("No")}
+              </div>
+
+              <div class="lockRow">
+                <span class="small muted">${locked ? "Selected and locked. Other option is hidden." : "Pick one. It will hide the other option and update Summary."}</span>
+                <div class="btnRow">
+                  <button class="linkBtn" type="button" data-action="unlock" data-group="preApprovedGroup" style="${locked ? "" : "display:none"}">Change</button>
+                  <button class="linkBtn" type="button" data-action="clear" data-group="preApprovedGroup" style="${(!locked && state.preApproved.value) ? "" : "display:none"}">Clear</button>
+                </div>
+              </div>
+
+              ${no ? `
+                <div class="section" style="border-top:none; padding-top:0; margin-top:10px;">
+                  <div class="scriptBox">
+                    That's actually the perfect first step! Getting pre-approved tells you exactly what you qualify for and puts you ahead of other buyers.
+                    We work with some excellent lenders who can get that done quickly and show you all available programs, including options with as little as 3-5% down, and some buyers even qualify for 0% down programs.
+                    Getting pre-approved before you start seriously looking is huge in this market.
+                  </div>
+                </div>
+              ` : ``}
+            </div>
+          </div>
+        </div>
+      `;
+        }
+
+        function renderAppointment() {
+            return `
+        <div class="section" style="border-top:none; padding-top:0; margin-top:0;">
+          <p class="sectionTitle">Appointment</p>
+
+          <div class="q">
+            <div class="qIcon" aria-hidden="true">•</div>
+            <div class="qBody">
+              <p class="qText">Getting pre-approved costs you nothing, and it does two things for you:</p>
+              <div class="scriptBox">
+                One, it tells you exactly what you can afford, sometimes it's more than you think, sometimes the payment structure works differently than you expect.
+                <br><br>
+                Two, when you ARE ready to move, you're not scrambling. You'll be able to act fast on the right property, because homes with yards in safe neighborhoods don't sit long in that price range.
+              </div>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="qIcon" aria-hidden="true">•</div>
+            <div class="qBody">
+              <p class="qText">Would it make sense to at least have that conversation with our lending specialist this week?</p>
+              <div class="scriptBox">
+                No obligation, just so you know where you stand financially when the time comes.
+                Does Wednesday or Thursday work better for a quick 20-minute call?
+              </div>
+
+              ${chipGroupMultiHTML({
+                groupId: "apptDayGroup",
+                title: "Day preference",
+                options: ["Wednesday", "Thursday"],
+                locked: state.apptDay.locked,
+                selectedValues: state.apptDay.values
+            })}
+            </div>
+          </div>
+        </div>
+      `;
+        }
+
+        function renderPlaceholder(name) {
+            return `
+        <div class="scriptBox">
+          <div style="font-weight:700; margin-bottom:6px;">${escapeHtml(name)} (Coming next)</div>
+          <div class="small muted">This section is a placeholder for now.</div>
+        </div>
+      `;
+        }
+
+        function setActiveSection(section) {
+            state.activeSection = section;
+
+            [...nav.querySelectorAll(".navbtn")].forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.section === section);
+            });
+
+            status.textContent = "Selected: " + section;
+            contentTitle.textContent = section;
+
+            if (section === "Location") contentBody.innerHTML = renderLocation();
+            else if (section === "Price") contentBody.innerHTML = renderPrice();
+            else if (section === "Motivation") contentBody.innerHTML = renderMotivation();
+            else if (section === "Agent") contentBody.innerHTML = renderAgent();
+            else if (section === "Mortgage") contentBody.innerHTML = renderMortgage();
+            else if (section === "Appointment") contentBody.innerHTML = renderAppointment();
+            else contentBody.innerHTML = renderPlaceholder(section);
+
+            renderSummary();
+        }
+
+        nav.addEventListener("click", (e) => {
+            const btn = e.target.closest(".navbtn");
+            if (!btn) return;
+            setActiveSection(btn.dataset.section);
+        });
+
+        contentBody.addEventListener("change", (e) => {
+            const t = e.target;
+
+            if (t && t.matches('input[data-action="stage"]')) {
+                state.locationStage = t.value;
+                setActiveSection("Location");
+                const target = document.getElementById("locationQuestions");
+                if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+                return;
+            }
+
+            if (t && t.matches('input[type="checkbox"][data-group]')) {
+                const groupId = t.getAttribute("data-group");
+                const val = t.value;
+                const checked = t.checked;
+
+                if (groupId === "neighborhoodGroup" && !state.neighborhood.locked) {
+                    state.neighborhood.values = toggleInArray(state.neighborhood.values, val, checked);
+                    setActiveSection(state.activeSection); return;
+                }
+                if (groupId === "homeTypeGroup" && !state.homeType.locked) {
+                    state.homeType.values = toggleInArray(state.homeType.values, val, checked);
+                    setActiveSection(state.activeSection); return;
+                }
+                if (groupId === "bedroomGroup" && !state.bedroom.locked) {
+                    state.bedroom.values = toggleInArray(state.bedroom.values, val, checked);
+                    setActiveSection(state.activeSection); return;
+                }
+                if (groupId === "bathroomGroup" && !state.bathroom.locked) {
+                    state.bathroom.values = toggleInArray(state.bathroom.values, val, checked);
+                    setActiveSection(state.activeSection); return;
+                }
+
+                if (groupId === "priceGroup" && !state.price.locked) {
+                    state.price.values = toggleInArray(state.price.values, val, checked);
+                    setActiveSection(state.activeSection); return;
+                }
+
+                if (groupId === "motivationGroup" && !state.motivation.locked) {
+                    state.motivation.values = toggleInArray(state.motivation.values, val, checked);
+                    setActiveSection("Motivation"); return;
+                }
+
+                if (groupId === "agentGroup" && !state.hasBroker.locked) {
+                    if (checked) {
+                        state.hasBroker.value = val;
+                        state.hasBroker.locked = true;
+                    } else state.hasBroker.value = "";
+                    setActiveSection("Agent"); return;
+                }
+
+                if (groupId === "payTypeGroup" && !state.payType.locked) {
+                    state.payType.values = toggleInArray(state.payType.values, val, checked);
+                    setActiveSection("Mortgage"); return;
+                }
+
+                if (groupId === "preApprovedGroup" && !state.preApproved.locked) {
+                    if (checked) {
+                        state.preApproved.value = val;
+                        state.preApproved.locked = true;
+                    } else state.preApproved.value = "";
+                    setActiveSection("Mortgage"); return;
+                }
+
+                if (groupId === "apptDayGroup" && !state.apptDay.locked) {
+                    state.apptDay.values = toggleInArray(state.apptDay.values, val, checked);
+                    setActiveSection("Appointment"); return;
+                }
+            }
+        });
+
+        contentBody.addEventListener("input", (e) => {
+            const t = e.target;
+            if (!t || !t.matches("input[data-field]")) return;
+            const key = t.getAttribute("data-field");
+            state[key] = t.value;
+            renderSummary();
+        });
+
+        contentBody.addEventListener("click", (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+
+            const action = btn.getAttribute("data-action");
+            const groupId = btn.getAttribute("data-group");
+
+            function lock(group) { group.locked = true; }
+            function unlock(group) { group.locked = false; }
+            function clearMulti(group) { group.values = []; }
+            function clearSingle(group) { group.value = ""; }
+
+            if (action === "lock") {
+                if (groupId === "neighborhoodGroup") lock(state.neighborhood);
+                if (groupId === "homeTypeGroup") lock(state.homeType);
+                if (groupId === "bedroomGroup") lock(state.bedroom);
+                if (groupId === "bathroomGroup") lock(state.bathroom);
+                if (groupId === "priceGroup") lock(state.price);
+                if (groupId === "motivationGroup") lock(state.motivation);
+                if (groupId === "payTypeGroup") lock(state.payType);
+                if (groupId === "apptDayGroup") lock(state.apptDay);
+                setActiveSection(state.activeSection);
+                return;
+            }
+
+            if (action === "unlock") {
+                if (groupId === "neighborhoodGroup") unlock(state.neighborhood);
+                if (groupId === "homeTypeGroup") unlock(state.homeType);
+                if (groupId === "bedroomGroup") unlock(state.bedroom);
+                if (groupId === "bathroomGroup") unlock(state.bathroom);
+                if (groupId === "priceGroup") unlock(state.price);
+                if (groupId === "motivationGroup") unlock(state.motivation);
+                if (groupId === "payTypeGroup") unlock(state.payType);
+                if (groupId === "apptDayGroup") unlock(state.apptDay);
+
+                if (groupId === "agentGroup") {
+                    unlock(state.hasBroker);
+                    clearSingle(state.hasBroker);
+                }
+                if (groupId === "preApprovedGroup") {
+                    unlock(state.preApproved);
+                    clearSingle(state.preApproved);
+                }
+
+                setActiveSection(state.activeSection);
+                return;
+            }
+
+            if (action === "clear") {
+                if (groupId === "neighborhoodGroup") clearMulti(state.neighborhood);
+                if (groupId === "homeTypeGroup") clearMulti(state.homeType);
+                if (groupId === "bedroomGroup") clearMulti(state.bedroom);
+                if (groupId === "bathroomGroup") clearMulti(state.bathroom);
+                if (groupId === "priceGroup") clearMulti(state.price);
+                if (groupId === "motivationGroup") clearMulti(state.motivation);
+                if (groupId === "payTypeGroup") clearMulti(state.payType);
+                if (groupId === "apptDayGroup") clearMulti(state.apptDay);
+
+                if (groupId === "agentGroup") clearSingle(state.hasBroker);
+                if (groupId === "preApprovedGroup") clearSingle(state.preApproved);
+
+                setActiveSection(state.activeSection);
+                return;
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            const map = { "1": "Location", "2": "Price", "3": "Motivation", "4": "Agent", "5": "Mortgage", "6": "Appointment" };
+            if (map[e.key]) setActiveSection(map[e.key]);
+        });
+
+        setActiveSection("Location");
+    </script>
+</body>
+
+</html>
